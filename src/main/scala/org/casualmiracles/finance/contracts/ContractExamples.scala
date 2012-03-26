@@ -20,4 +20,20 @@ object ContractExamples extends App {
   
   def absorbEx(t: Date, x:Double, k: Currency) = until (konst(t) %> date) (scale (konst(x)) (one(k)))
   
+  
+  // some examples from the paper
+  val t2 = mkDate(10)
+  
+  def rainInCyprus = konst(10.0) // something that generates rainfall figures
+  def interestRate = konst(1.0) // obviously need a real source of interest rates
+
+  val c8 = scale(rainInCyprus)(One(GBP))
+
+  val c9 = scale((rainInCyprus - 7) * 1000)(One(GBP))
+
+  val c10 = cond(rainInCyprus %> 10)(c8)(c9)
+
+  val c12 = until(interestRate %> 6)(american(t1, t2, c10))
+  
+  printPr(evalX(c10),10)
 }
