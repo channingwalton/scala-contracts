@@ -152,7 +152,7 @@ object Contracts {
   }
 
   // lift3Pr :: (a -> b -> c -> d) -> PR a -> PR b -> PR c -> PR d
-  // lift3Pr f (PR a) (PR b) (PR c) = PR $ zipWith3 (zipWith3 f) a b c
+  // lift3Pr f (PR a) (PR b) (PR c) = PR $ zipWith3 (zipWith3 f) a b c	
   def lift3Pr[A, B, C, D](f: (A, B, C) ⇒ D, aPr: PR[A], bPr: PR[B], cPr: PR[C]): PR[D] = {
     val rvF = (rvA: RV[A], rvB: RV[B], rvC: RV[C]) ⇒ zipWith3(rvA, rvB, rvC)((a: A, b: B, c: C) ⇒ f(a, b, c))
     PR(zipWith3(aPr.unPr, bPr.unPr, cPr.unPr)(rvF))

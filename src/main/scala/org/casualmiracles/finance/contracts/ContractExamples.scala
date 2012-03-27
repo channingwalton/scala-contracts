@@ -16,8 +16,11 @@ object ContractExamples extends App {
     zcb(mkDate(30), 9.3, USD) and
     zcb(mkDate(40), 109.3, USD) andGive (zcb(mkDate(12), 100.0, GBP)))
   
-  val pr1 = evalX(c1)
-  printPr(pr1,10)
+  println("C1")
+  printPr(evalX(c1),10)
+
+  println("\nRate evolution")
+  printPr(takePr(t1Horizon + 1, xm.rateModel(USD)), t1Horizon + 1)
   
   def absorbEx(t: Date, x:Double, k: Currency) = until (konst(t) %> date) (scale (konst(x)) (one(k)))
   

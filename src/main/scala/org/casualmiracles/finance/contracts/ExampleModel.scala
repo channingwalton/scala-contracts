@@ -35,8 +35,8 @@ object ExampleModel {
     }
     eval _
   }
-  
-   def takePr[T](n: Int, pr: PR[T]) = PR(pr.unPr.take(n))
+
+  def takePr[T](n: Int, pr: PR[T]) = PR(pr.unPr.take(n))
   def horizonPr(pr: PR[_]) = pr.unPr.length
   def andPr(pr: PR[Boolean]) = pr.unPr.forall(_)
 
@@ -58,7 +58,7 @@ object ExampleModel {
   def rates(rateNow: Double, delta: Double): PR[Double] = {
     def makeRateSlices(rateNow: Double, n: Int): Stream[RV[Double]] = rateSlice(rateNow, n) #:: makeRateSlices(rateNow - delta, n + 1)
     def rateSlice(minRate: Double, n: Int) = comb(minRate).take(n)
-    def comb(x: Double): Stream[Double] = x #:: comb(x + delta)
+    def comb(x: Double): Stream[Double] = x #:: comb(x + 2*delta)
     PR(makeRateSlices(rateNow, 1))
   }
 
@@ -160,8 +160,8 @@ object ExampleModel {
     def paths(sl: Stream[Int]): Stream[RV[Int]] = sl #:: (paths(zipWith(sl ++ zero, 0 #:: sl)(_ + _)))
     paths(Stream(1))
   }
-  
-   // evalO :: Obs a -> PR a
+
+  // evalO :: Obs a -> PR a
   // evalO (Obs o) = o time0
   def evalO[T](o: Observable[T]): PR[T] = o.f(time0)
 }
