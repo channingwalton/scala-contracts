@@ -58,7 +58,7 @@ object Contracts {
   def until = (Until.apply _).curried
   def scale = (Scale.apply _).curried
   def cond = (Cond.apply _).curried
-  def at(d: Date): Observable[Boolean] = lift2((a: Date, b: Date) ⇒ a == b, date, konst(d))
+  def at(d: Date): Observable[Boolean] = lift2((_: Date) == (_: Date), date, konst(d))
 
   implicit def withEnrichment(c: Contract) = new {
     def and(c2: Contract) = And(c, c2)
@@ -67,16 +67,14 @@ object Contracts {
   }
 
   implicit def toKonstD(x: Double) = konst(x)
-  
+
   implicit def toKonstI(x: Int) = konst(x.toDouble)
 
   def konst[T](k: T) = Observable((d: Date) ⇒ bigK(k))
-  
+
   def date = Observable((t: Date) ⇒ PR(timeSlices(Stream(t))))
 
-  def bigK[T](x: T) = {
-    PR(konstSlices(x))
-  }
+  def bigK[T](x: T) = PR(konstSlices(x))
 
   def konstSlices[T](x: T): Stream[Stream[T]] = {
     def nextSlice(sl: Stream[T]): Stream[Stream[T]] = sl #:: nextSlice(x #:: sl)
@@ -84,7 +82,7 @@ object Contracts {
   }
 
   def mkDate(t: TimeStep): Date = Date((), t)
-  
+
   def time0 = mkDate(0)
 
   def timeSlices(sl: RV[Date]): Stream[RV[Date]] = {
@@ -100,7 +98,7 @@ object Contracts {
   def lift[A, B](f: A ⇒ B, obs: Observable[A]) = Observable((t: Date) ⇒ PR(obs.f(t).unPr.map(_.map(f(_)))))
 
   def lift2[A, B, C](f: (A, B) ⇒ C, obsA: Observable[A], obsB: Observable[B]): Observable[C] = {
-    val rvF = (rvA: RV[A], rvB: RV[B]) ⇒ zipWith(rvA, rvB)((a: A, b: B) ⇒ f(a, b))
+    val rvF = (rvA: RV[A], rvB: RV[B]) ⇒ zipWith(rvA, rvB)(f(_, _))
     Observable((t: Date) ⇒ PR(zipWith(obsA.f(t).unPr, obsB.f(t).unPr)(rvF)))
   }
 
@@ -125,17 +123,17 @@ object Contracts {
   def liftPr[A, B](f: A ⇒ B, pr: PR[A]): PR[B] = PR(pr.unPr.map(_.map(f(_))))
 
   def lift2Pr[A, B, C](f: (A, B) ⇒ C, aPr: PR[A], bPr: PR[B]): PR[C] = {
-    val rvF = (rvA: RV[A], rvB: RV[B]) ⇒ zipWith(rvA, rvB)((a: A, b: B) ⇒ f(a, b))
+    val rvF = (rvA: RV[A], rvB: RV[B]) ⇒ zipWith(rvA, rvB)(f(_, _))
     PR(zipWith(aPr.unPr, bPr.unPr)(rvF))
   }
 
   def lift2PrAll[A](f: (A, A) ⇒ A, aPr: PR[A], bPr: PR[A]): PR[A] = {
-    val rvF = (rvA: RV[A], rvB: RV[A]) ⇒ zipWith(rvA, rvB)((a: A, b: A) ⇒ f(a, b))
+    val rvF = (rvA: RV[A], rvB: RV[A]) ⇒ zipWith(rvA, rvB)(f(_, _))
     PR(zipWithAll(rvF, aPr.unPr, bPr.unPr))
   }
 
   def lift3Pr[A, B, C, D](f: (A, B, C) ⇒ D, aPr: PR[A], bPr: PR[B], cPr: PR[C]): PR[D] = {
-    val rvF = (rvA: RV[A], rvB: RV[B], rvC: RV[C]) ⇒ zipWith3(rvA, rvB, rvC)((a: A, b: B, c: C) ⇒ f(a, b, c))
+    val rvF = (rvA: RV[A], rvB: RV[B], rvC: RV[C]) ⇒ zipWith3(rvA, rvB, rvC)(f(_, _, _))
     PR(zipWith3(aPr.unPr, bPr.unPr, cPr.unPr)(rvF))
   }
 
