@@ -1,5 +1,6 @@
 package org.casualmiracles.finance.contracts
 import Contracts._
+import ExampleModel._
 
 object ContractExamples extends App {
 
