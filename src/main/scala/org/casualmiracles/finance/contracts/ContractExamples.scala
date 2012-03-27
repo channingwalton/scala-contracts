@@ -19,6 +19,9 @@ object ContractExamples extends App {
   println("C1")
   printPr(evalX(c1),10)
 
+  println("C11")
+  printPr(evalX(c11),100)
+
   def absorbEx(t: Date, x:Double, k: Currency) = until (konst(t) %> date) (scale (konst(x)) (one(k)))
   
   println("AbsorbEx")
