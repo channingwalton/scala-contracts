@@ -35,8 +35,10 @@ object ContractExamples extends App {
 
   val c9 = scale((rainInCyprus - 7) * 1000)(One(GBP))
 
-  val c10 = cond(rainInCyprus %> 10)(c8)(c9)
+  val c10 = cond(rainInCyprus %> 9)(c8)(c9)
 
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
   
+  println("C12")
+  printPr(evalX(c10),10)
 }
