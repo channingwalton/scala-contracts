@@ -1,6 +1,7 @@
 package org.casualmiracles.finance.contracts
 
 import Contracts._
+import Stream.Empty
 
 object ExampleModel {
   // Compositional valuation semantics for contracts
@@ -43,7 +44,7 @@ object ExampleModel {
   def rates(rateNow: Double, delta: Double): PR[Double] = {
     def makeRateSlices(rateNow: Double, n: Int): Stream[RV[Double]] = rateSlice(rateNow, n) #:: makeRateSlices(rateNow - delta, n + 1)
     def rateSlice(minRate: Double, n: Int) = comb(minRate).take(n)
-    def comb(x: Double): Stream[Double] = x #:: comb(x + 2*delta)
+    def comb(x: Double): Stream[Double] = x #:: comb(x + 2 * delta)
     PR(makeRateSlices(rateNow, 1))
   }
 
@@ -75,8 +76,8 @@ object ExampleModel {
   }
 
   def prevSlice(s: RV[Double]): RV[Double] = s match {
-    case Stream.Empty         ⇒ Stream.Empty
-    case (_ #:: Stream.Empty) ⇒ Stream.Empty
+    case Empty                ⇒ Empty
+    case (_ #:: Empty)        ⇒ Empty
     case (n1 #:: n2 #:: rest) ⇒ ((n1 + n2) / 2.0) #:: prevSlice(n2 #:: rest)
   }
 

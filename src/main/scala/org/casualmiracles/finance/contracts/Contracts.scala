@@ -1,5 +1,7 @@
 package org.casualmiracles.finance.contracts
 
+import Stream.Empty
+
 object Contracts {
 
   trait Currency
@@ -139,9 +141,9 @@ object Contracts {
 
   def zipWithAll[A](f: (A, A) ⇒ A, sa: Stream[A], sb: Stream[A]): Stream[A] = (sa, sb) match {
     case (a #:: as, b #:: bs) ⇒ f(a, b) #:: zipWithAll(f, as, bs)
-    case (as, Stream.Empty)   ⇒ as
-    case (Stream.Empty, bs)   ⇒ bs
-    case (_, _)               ⇒ Stream.Empty
+    case (as, Empty)          ⇒ as
+    case (Empty, bs)          ⇒ bs
+    case (_, _)               ⇒ Empty
   }
 
   def printPr(pr: PR[_], n: Int) = pr.unPr.take(n).foreach(s ⇒ { s.foreach(s ⇒ print(s + " ")); println("") })
