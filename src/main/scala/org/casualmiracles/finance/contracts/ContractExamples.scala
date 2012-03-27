@@ -19,11 +19,10 @@ object ContractExamples extends App {
   println("C1")
   printPr(evalX(c1),10)
 
-  println("\nRate evolution")
-  printPr(takePr(t1Horizon + 1, xm.rateModel(USD)), t1Horizon + 1)
-  
   def absorbEx(t: Date, x:Double, k: Currency) = until (konst(t) %> date) (scale (konst(x)) (one(k)))
   
+  println("AbsorbEx")
+  printPr(evalX(absorbEx(t1, 10, USD)),5)
   
   // some examples from the paper
   val t2 = mkDate(10)
@@ -39,6 +38,4 @@ object ContractExamples extends App {
 
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
   
-  println("C12")
-  printPr(evalX(c10),10)
 }
