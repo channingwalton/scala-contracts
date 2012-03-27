@@ -36,5 +36,4 @@ object ContractExamples extends App {
 
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
   
-  printPr(evalX(c10),10)
 }

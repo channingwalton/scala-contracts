@@ -12,6 +12,7 @@ object Contracts {
 
   type TimeStep = Int
   type CalendarTime = Unit
+  
   case class Date(c: CalendarTime, t: TimeStep) extends Ordered[Date] {
     def compare(that: Date) = t.compare(that.t)
   }
