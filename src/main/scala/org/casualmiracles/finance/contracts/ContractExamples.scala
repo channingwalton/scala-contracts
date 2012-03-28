@@ -41,4 +41,7 @@ object ContractExamples extends App {
 
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
   
+  println("expt")
+  printPr(evalX(zcb(mkDate(2), 1, USD) or zcb(mkDate(3), 2, USD)), 5)
+  
 }

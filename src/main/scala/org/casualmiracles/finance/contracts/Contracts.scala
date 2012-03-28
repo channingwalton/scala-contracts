@@ -78,8 +78,8 @@ object Contracts {
 
   def bigK[T](x: T) = PR(konstSlices(x))
 
-  def konstSlices[T](x: T): Stream[Stream[T]] = {
-    def nextSlice(sl: Stream[T]): Stream[Stream[T]] = sl #:: nextSlice(x #:: sl)
+  def konstSlices[T](x: T): Stream[RV[T]] = {
+    def nextSlice(sl: Stream[T]): Stream[RV[T]] = sl #:: nextSlice(x #:: sl)
     nextSlice(Stream(x))
   }
 
@@ -106,9 +106,9 @@ object Contracts {
 
   def between(d1: Date, d2: Date) = lift2((_: Boolean) && (_: Boolean), date %<= konst(d1), date %>= konst(d2))
 
-  def zcb(d: Date, n: Double, c: Currency) = when(at(d))(scale(n)(One(c)))
-  def european(d: Date, c: Contract) = when(at(d))(c or Zero)
-  def american(d1: Date, d2: Date, c: Contract) = anytime(between(d1, d2))(c)
+  def zcb(d: Date, n: Double, c: Currency): Contract = when(at(d))(scale(n)(One(c)))
+  def european(d: Date, c: Contract): Contract = when(at(d))(c or Zero)
+  def american(d1: Date, d2: Date, c: Contract): Contract = anytime(between(d1, d2))(c)
 
   implicit def PrOps(prA: PR[Double]) = new {
     def +(prB: PR[Double]): PR[Double] = lift2PrAll((_: Double) + (_: Double), prA, prB)
