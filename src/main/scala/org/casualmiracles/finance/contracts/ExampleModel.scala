@@ -65,7 +65,7 @@ object ExampleModel {
     val (bRv #:: bs) = b
     val (pRv #:: ps) = p
     val (rateRv #:: rs) = rate
-    if (bRv.isEmpty || bRv.forall(bv ⇒ bv)) Stream(pRv)
+    if (bRv.forall(bv ⇒ bv)) Stream(pRv)
     else {
       val rest = discCalc(bs, ps, rs)
       val (nextSlice #:: _) = rest

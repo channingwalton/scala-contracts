@@ -1,6 +1,7 @@
 package org.casualmiracles.finance.contracts
 import Contracts._
 import ExampleModel._
+import Cashflows._
 
 object ContractExamples extends App {
 
@@ -24,9 +25,6 @@ object ContractExamples extends App {
 
   def absorbEx(t: Date, x:Double, k: Currency) = until (konst(t) %> date) (scale (konst(x)) (one(k)))
   
-  println("AbsorbEx")
-  printPr(evalX(absorbEx(t1, 10, USD)),5)
-  
   // some examples from the paper
   val t2 = mkDate(10)
   
@@ -41,7 +39,7 @@ object ContractExamples extends App {
 
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
   
-  println("expt")
-  printPr(evalX(zcb(mkDate(2), 1, USD) or zcb(mkDate(3), 2, USD)), 5)
+  println("c1 cashflow")
+  printPr(cashflow(xm, USD)(c8), 5)
   
 }
