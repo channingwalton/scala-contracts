@@ -35,4 +35,7 @@ object Cashflows {
       thisSlice #:: rest
     }
   }
+  
+  def compressed[T](pr: PR[T]): PR[T] = PR(pr.unPr.map(rv => compressed(rv)))
+  def compressed[T](rv: RV[T]): RV[T] = if (rv.toSet.size == 1) Stream(rv.toSet.head) else rv    
 }

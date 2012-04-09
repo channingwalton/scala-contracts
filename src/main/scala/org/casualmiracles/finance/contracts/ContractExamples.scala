@@ -40,6 +40,5 @@ object ContractExamples extends App {
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
   
   println("c1 cashflow")
-  printPr(cashflow(xm, USD)(c8), 5)
-  
+  printPr(compressed(cashflow(xm, USD)(c1)), 5)
 }

@@ -146,5 +146,9 @@ object Contracts {
     case (_, _)               ⇒ Empty
   }
 
-  def printPr(pr: PR[_], n: Int) = pr.unPr.take(n).foreach(s ⇒ { s.foreach(s ⇒ print(s + " ")); println("") })
+  def printPr(pr: PR[_], n: Int) = pr.unPr.take(n).zipWithIndex.foreach{is ⇒ { print(is._2 + ": ");printRV(is._1) }}
+  def printRV(rv: RV[_]) {
+    rv.foreach(s ⇒ print(s + " "))
+    println("")
+  }
 }
