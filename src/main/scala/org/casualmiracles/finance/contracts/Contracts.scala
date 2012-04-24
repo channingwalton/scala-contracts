@@ -89,7 +89,7 @@ object Contracts {
 
   def timeSlices(sl: RV[Date]): Stream[RV[Date]] = {
     val (Date(s, t) #:: _) = sl
-    val nextSlice = Stream.fill(t + 2)(Date(s, t + 1))
+    val nextSlice = Stream(Date(s, t + 1))
     sl #:: timeSlices(nextSlice)
   }
 

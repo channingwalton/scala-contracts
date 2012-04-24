@@ -70,7 +70,8 @@ object ExampleModel {
       val rest = discCalc(bs, ps, rs)
       val (nextSlice #:: _) = rest
       val discSlice = zipWith(prevSlice(nextSlice), rateRv)((x, r) ⇒ x / (1 + r / 100))
-      val thisSlice = zipWith3(bRv, pRv, discSlice)((b, p, q) ⇒ if (b) p else q)
+      val bRvFilled = if (bRv.size == pRv.size) bRv else Stream.fill(nextSlice.size)(bRv(0))
+      val thisSlice = zipWith3(bRvFilled, pRv, discSlice)((b, p, q) ⇒ if (b) p else q)
       thisSlice #:: rest
     }
   }
