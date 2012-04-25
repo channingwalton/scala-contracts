@@ -6,23 +6,23 @@ object Contracts {
   type TimeStep = Int
   type CalendarTime = Unit
 
-  case class Date(c: CalendarTime, t: TimeStep) extends Ordered[Date] {
-    def compare(that: Date) = t.compare(that.t)
-  }
-
   type RV[A] = Stream[A]
 
   case class PR[A](unPr: Stream[RV[A]])
+
+  case class Date(c: CalendarTime, t: TimeStep) extends Ordered[Date] {
+    def compare(that: Date) = t.compare(that.t)
+  }
 
   implicit def toKonstD(x: Double) = konst(x)
 
   implicit def toKonstI(x: Int) = konst(x.toDouble)
 
-  def konst[T](k: T) = Observable((d: Date) ⇒ bigK(k))
+  def konst[T](k: T): Observable[T] = Observable((d: Date) ⇒ bigK(k))
 
-  def date = Observable((t: Date) ⇒ PR(timeSlices(Stream(t))))
+  def date: Observable[Date] = Observable((t: Date) ⇒ PR(timeSlices(Stream(t))))
 
-  def bigK[T](x: T) = PR(konstSlices(x))
+  def bigK[T](x: T): PR[T] = PR(konstSlices(x))
 
   def konstSlices[T](x: T): Stream[RV[T]] = {
     def nextSlice(sl: Stream[T]): Stream[RV[T]] = sl #:: nextSlice(x #:: sl)
@@ -30,7 +30,7 @@ object Contracts {
   }
   def timeSlices(sl: RV[Date]): Stream[RV[Date]] = {
     val (Date(s, t) #:: _) = sl
-    val nextSlice = Stream(Date(s, t + 1))
+    val nextSlice = Stream.fill(t + 2)(Date(s, t + 1))
     sl #:: timeSlices(nextSlice)
   }
 
@@ -48,13 +48,13 @@ object Contracts {
     def %>=(a: Observable[T]) = lift2((_: T) >= (_: T), obs, a)
   }
 
-  def between(d1: Date, d2: Date) = lift2((_: Boolean) && (_: Boolean), date %<= konst(d1), date %>= konst(d2))
+  def between(d1: Date, d2: Date): Observable[Boolean] = lift2((_: Boolean) && (_: Boolean), date %<= konst(d1), date %>= konst(d2))
 
   def zipWith[A, B, C](sA: Stream[A], sB: Stream[B])(f: (A, B) ⇒ C): Stream[C] = sA.zip(sB).map(x ⇒ f(x._1, x._2))
 
   def zipWith3[A, B, C, D](sA: Stream[A], sB: Stream[B], sC: Stream[C])(f: (A, B, C) ⇒ D): Stream[D] = sA.zip(sB.zip(sC)).map(x ⇒ f(x._1, x._2._1, x._2._2))
 
-  def lift[A, B](f: A ⇒ B, obs: Observable[A]) = Observable((t: Date) ⇒ PR(obs.f(t).unPr.map(_.map(f(_)))))
+  def lift[A, B](f: A ⇒ B, obs: Observable[A]): Observable[B] = Observable((t: Date) ⇒ PR(obs.f(t).unPr.map(_.map(f(_)))))
 
   def lift2[A, B, C](f: (A, B) ⇒ C, obsA: Observable[A], obsB: Observable[B]): Observable[C] = {
     val rvF = (rvA: RV[A], rvB: RV[B]) ⇒ zipWith(rvA, rvB)(f(_, _))
@@ -77,8 +77,9 @@ object Contracts {
 
   def mkDate(t: TimeStep): Date = Date((), t)
 
-  def time0 = mkDate(0)
-  def max[T <% Double](pra: PR[T], prb: PR[T]) = lift2Pr((a: T, b: T) ⇒ math.max(a, b), pra, prb)
+  def time0: Date = mkDate(0)
+  
+  def max[T <% Double](pra: PR[T], prb: PR[T]): PR[Double] = lift2Pr((a: T, b: T) ⇒ math.max(a, b), pra, prb)
 
   def condPr[T](aPr: PR[Boolean], bPr: PR[T], cPr: PR[T]): PR[T] = lift3Pr((b: Boolean, tru: T, fal: T) ⇒ if (b) tru else fal, aPr, bPr, cPr)
 
@@ -105,10 +106,6 @@ object Contracts {
     case (Empty, bs) ⇒ bs
     case (_, _) ⇒ Empty
   }
-
-  def zcb(d: Date, n: Double, c: Currency): Contract = when(at(d))(scale(n)(One(c)))
-  def european(d: Date, c: Contract): Contract = when(at(d))(c or Zero)
-  def american(d1: Date, d2: Date, c: Contract): Contract = anytime(between(d1, d2))(c)
 
   implicit def PrOps(prA: PR[Double]) = new {
     def +(prB: PR[Double]): PR[Double] = lift2PrAll((_: Double) + (_: Double), prA, prB)

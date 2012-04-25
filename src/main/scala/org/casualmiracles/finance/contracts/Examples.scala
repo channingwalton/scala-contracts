@@ -2,32 +2,29 @@ package org.casualmiracles.finance.contracts
 import Contracts._
 import ExampleModel._
 import Cashflows._
+import Instruments._
 
-object ContractExamples extends App {
+object Examples extends App {
 
   val xm = exampleModel(mkDate(0))
   val evalX = evalC(xm, USD)
   val t1Horizon = 3
   val t1 = mkDate(t1Horizon)
   val c1 = zcb(t1, 10, USD)
-  
-  
-   val c11 = european(mkDate(2),
+
+  val c11 = european(mkDate(2),
     zcb(mkDate(20), 0.4, USD) and
-    zcb(mkDate(30), 9.3, USD) and
-    zcb(mkDate(40), 109.3, USD) andGive (zcb(mkDate(12), 100.0, GBP)))
-  
+      zcb(mkDate(30), 9.3, USD) and
+      zcb(mkDate(40), 109.3, USD) andGive (zcb(mkDate(12), 100.0, GBP)))
+
   println("C1")
-  printPr(evalX(c1),10)
+  printPr(evalX(c1), 10)
 
-  println("C11")
-  printPr(evalX(c11),100)
+  def absorbEx(t: Date, x: Double, k: Currency) = until(konst(t) %> date)(scale(konst(x))(one(k)))
 
-  def absorbEx(t: Date, x:Double, k: Currency) = until (konst(t) %> date) (scale (konst(x)) (one(k)))
-  
   // some examples from the paper
   val t2 = mkDate(10)
-  
+
   def rainInCyprus = konst(10.0) // something that generates rainfall figures
   def interestRate = konst(1.0) // obviously need a real source of interest rates
 
@@ -38,7 +35,7 @@ object ContractExamples extends App {
   val c10 = cond(rainInCyprus %> 9)(c8)(c9)
 
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
-  
+
   println("c1 cashflow")
   printPr(cashflow(xm, USD)(c1), 5)
 }
