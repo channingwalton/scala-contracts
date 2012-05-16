@@ -40,6 +40,7 @@ object Contracts {
     def /(a: Observable[T]) = lift2((_: T) / (_: T), obs, a)
     def +(a: Observable[T]) = lift2((_: T) + (_: T), obs, a)
     def -(a: Observable[T]) = lift2((_: T) - (_: T), obs, a)
+    def %(a: Observable[T]) = lift2((_: T) % (_: T), obs, a)
   }
 
   implicit def ObservableRelations[T <% Ordered[T]](obs: Observable[T]) = new {
@@ -53,6 +54,10 @@ object Contracts {
   implicit def ObservableBooleans(obs: Observable[Boolean]) = new {
     def %&&(a: Observable[Boolean]) = lift2((_: Boolean) && (_: Boolean), obs, a)
     def %||(a: Observable[Boolean]) = lift2((_: Boolean) || (_: Boolean), obs, a)
+  }
+  
+  implicit def ObservableDateOps(obs: Observable[Date]) = new {
+    def -(a: Observable[Date]) = lift2((_: Date).t - (_: Date).t, obs, a)
   }
 
   def between(d1: Date, d2: Date): Observable[Boolean] = (date %>= konst(d1)) %&& (date %<= konst(d2))

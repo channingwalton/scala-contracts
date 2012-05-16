@@ -16,12 +16,14 @@ object SwapExperiment extends App {
   def floatingRate(notional: Double, currency: Currency, float: Observable[Double]) = scale(float * notional)(One(currency))
 
   def uniformSchedule(start: Date, end: Date, frequency: Int): Observable[Boolean] =
-    between(start, end) %&& lift((d: Date) ⇒ (d.t - start.t) % frequency == 0, date)
+    between(start, end) %&& ((date - konst(start)) % konst(frequency) %== konst(0))
 
- val example = when(uniformSchedule(mkDate(4), mkDate(8), 2))(swap(fixedRate(1, USD, 0.05), floatingRate(1, USD, interestRate)))
+ val schedule = uniformSchedule(mkDate(4), mkDate(10), 2)
+ val example = when(schedule)(swap(fixedRate(1, USD, 0.05), floatingRate(1, USD, interestRate)))
  
+ val horizon = 15
  val xm = exampleModel(mkDate(0))
  val evalX = evalC(xm, USD)
  
- printPr(cashflow(xm, USD)(example), 10)
+ printPr(cashflow(xm, USD, horizon)(example), horizon)
 }

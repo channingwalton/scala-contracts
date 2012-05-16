@@ -37,5 +37,5 @@ object Examples extends App {
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
 
   println("c1 cashflow")
-  printPr(cashflow(xm, USD)(c1), 5)
+  printPr(cashflow(xm, USD, 10)(c1), 4)
 }
