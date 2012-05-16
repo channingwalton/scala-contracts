@@ -20,13 +20,13 @@ object Examples extends App {
   println("C1")
   printPr(evalX(c1), 10)
 
-  def absorbEx(t: Date, x: Double, k: Currency) = until(konst(t) %> date)(scale(konst(x))(one(k)))
+  def absorbEx(t: Date, x: Double, k: Currency) = until(constant(t) %> date)(scale(x)(one(k)))
 
   // some examples from the paper
   val t2 = mkDate(10)
 
-  def rainInCyprus = konst(10.0) // something that generates rainfall figures
-  def interestRate = konst(1.0) // obviously need a real source of interest rates
+  def rainInCyprus = constant(10.0) // something that generates rainfall figures
+  def interestRate = constant(1.0) // obviously need a real source of interest rates
 
   val c8 = scale(rainInCyprus)(One(GBP))
 

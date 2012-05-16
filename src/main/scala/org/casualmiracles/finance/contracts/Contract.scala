@@ -1,5 +1,7 @@
 package org.casualmiracles.finance.contracts
 
+import Contracts._
+
 trait Contract
 case object Zero extends Contract
 case class One(currency: Currency) extends Contract
