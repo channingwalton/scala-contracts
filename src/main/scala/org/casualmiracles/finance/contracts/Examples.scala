@@ -30,7 +30,7 @@ object Examples extends App {
 
   val c8 = scale(rainInCyprus)(One(GBP))
 
-  val c9 = scale((rainInCyprus - 7) * 1000)(One(GBP))
+  val c9 = scale((rainInCyprus %- 7) %* 1000)(One(GBP))
 
   val c10 = cond(rainInCyprus %> 9)(c8)(c9)
 

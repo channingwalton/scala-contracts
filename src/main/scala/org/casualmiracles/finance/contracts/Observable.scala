@@ -1,0 +1,43 @@
+package org.casualmiracles.finance.contracts
+
+trait Observables extends Zip {
+  
+  def lift[A, B](f: A ⇒ B, obs: Observable[A]): Observable[B] = Observable((t: Date) ⇒ PR(obs.f(t).unPr.map(_.map(f(_)))))
+
+  def lift2[A, B, C](f: (A, B) ⇒ C, obsA: Observable[A], obsB: Observable[B]): Observable[C] = {
+    val rvF = (rvA: RV[A], rvB: RV[B]) ⇒ zipWith(rvA, rvB)(f(_, _))
+    Observable((t: Date) ⇒ PR(zipWith(obsA.f(t).unPr, obsB.f(t).unPr)(rvF)))
+  }
+}
+
+object Observable extends Observables {
+
+  implicit def ObservableOps[T <% Double](obs: Observable[T]) = new {
+    def %*(a: Observable[T]) = lift2((_: T) * (_: T), obs, a)
+    def %/(a: Observable[T]) = lift2((_: T) / (_: T), obs, a)
+    def %+(a: Observable[T]) = lift2((_: T) + (_: T), obs, a)
+    def %-(a: Observable[T]) = lift2((_: T) - (_: T), obs, a)
+    def %%(a: Observable[T]) = lift2((_: T) % (_: T), obs, a)
+  }
+
+  implicit def ObservableRelations[T <% Ordered[T]](obs: Observable[T]) = new {
+    def %<(a: Observable[T]) = lift2((_: T) < (_: T), obs, a)
+    def %<=(a: Observable[T]) = lift2((_: T) <= (_: T), obs, a)
+    def %>(a: Observable[T]) = lift2((_: T) > (_: T), obs, a)
+    def %>=(a: Observable[T]) = lift2((_: T) >= (_: T), obs, a)
+    def %==(a: Observable[T]) = lift2((_: T) == (_: T), obs, a)
+  }
+
+  implicit def ObservableBooleans(obs: Observable[Boolean]) = new {
+    def %&&(a: Observable[Boolean]) = lift2((_: Boolean) && (_: Boolean), obs, a)
+    def %||(a: Observable[Boolean]) = lift2((_: Boolean) || (_: Boolean), obs, a)
+  }
+
+  implicit def ObservableDateOps(obs: Observable[Date]) = new {
+    def %-(a: Observable[Date]) = lift2((_: Date).t - (_: Date).t, obs, a)
+    def %+(a: Observable[Date]) = lift2((_: Date).t + (_: Date).t, obs, a)
+  }
+  
+}
+
+case class Observable[T](f: Date ⇒ PR[T])

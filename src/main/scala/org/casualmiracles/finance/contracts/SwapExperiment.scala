@@ -13,9 +13,9 @@ object SwapExperiment extends App {
 
   def fixedRate(notional: Double, currency: Currency, rate: Double) = scale(notional * rate)(One(currency))
 
-  def floatingRate(notional: Double, currency: Currency, rate: Observable[Double]) = scale(rate * notional)(One(currency))
+  def floatingRate(notional: Double, currency: Currency, rate: Observable[Double]) = scale(rate %* notional)(One(currency))
 
-  def uniformSchedule(start: Date, end: Date, frequency: Int): Observable[Boolean] = between(start, end) %&& ((date - start) % frequency %== 0)
+  def uniformSchedule(start: Date, end: Date, frequency: Int): Observable[Boolean] = between(start, end) %&& ((date %- start) %% frequency %== 0)
 
  val fixedSchedule = uniformSchedule(mkDate(4), mkDate(10), 2)
  val floatingSchedule = uniformSchedule(mkDate(4), mkDate(10), 3)

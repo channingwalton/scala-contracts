@@ -9,9 +9,9 @@ object ExampleModel {
     def eval(contract: Contract): PR[Double] = contract match {
       case Zero            ⇒ bigK(0)
       case One(k2)         ⇒ model.exch(k)(k2)
-      case Give(c)         ⇒ bigK(-1.0) * eval(c)
-      case Scale(o, c)     ⇒ evalO(o) * eval(c)
-      case And(c1, c2)     ⇒ eval(c1) + eval(c2)
+      case Give(c)         ⇒ bigK(-1.0) %* eval(c)
+      case Scale(o, c)     ⇒ evalO(o) %* eval(c)
+      case And(c1, c2)     ⇒ eval(c1) %+ eval(c2)
       case Or(c1, c2)      ⇒ max(eval(c1), eval(c2))
       case Cond(o, c1, c2) ⇒ condPr(evalO(o), eval(c1), eval(c2))
       case When(o, c)      ⇒ disc(k, evalO(o), eval(c))
