@@ -1,16 +1,20 @@
 package org.casualmiracles.finance.contracts
 
-trait Observables extends Zip {
+object Observable extends Zip {
   
-  def lift[A, B](f: A ⇒ B, obs: Observable[A]): Observable[B] = Observable((t: Date) ⇒ PR(obs.f(t).unPr.map(_.map(f(_)))))
+  import scalaz._
+  import Scalaz._
+  
+  implicit def ObservableFunctor: Functor[Observable] = new Functor[Observable] {
+    def fmap[A, B](r: Observable[A], f: A => B) = Observable((t: Date) ⇒ PR(r.f(t).unPr.map(_.map(f(_)))))
+  } 
+  
+  //def lift[A, B](f: A ⇒ B, obs: Observable[A]): Observable[B] = Observable((t: Date) ⇒ PR(obs.f(t).unPr.map(_.map(f(_)))))
 
   def lift2[A, B, C](f: (A, B) ⇒ C, obsA: Observable[A], obsB: Observable[B]): Observable[C] = {
     val rvF = (rvA: RV[A], rvB: RV[B]) ⇒ zipWith(rvA, rvB)(f(_, _))
     Observable((t: Date) ⇒ PR(zipWith(obsA.f(t).unPr, obsB.f(t).unPr)(rvF)))
   }
-}
-
-object Observable extends Observables {
 
   implicit def ObservableOps[T <% Double](obs: Observable[T]) = new {
     def %*(a: Observable[T]) = lift2((_: T) * (_: T), obs, a)
@@ -37,7 +41,7 @@ object Observable extends Observables {
     def %-(a: Observable[Date]) = lift2((_: Date).t - (_: Date).t, obs, a)
     def %+(a: Observable[Date]) = lift2((_: Date).t + (_: Date).t, obs, a)
   }
-  
+
 }
 
 case class Observable[T](f: Date ⇒ PR[T])

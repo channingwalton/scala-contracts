@@ -2,7 +2,7 @@ package org.casualmiracles.finance.contracts
 
 import Stream.Empty
 
-object Contracts extends Observables with PRs with Zip {
+object Contracts extends PRs with Zip {
   
   def one = One.apply _
   def when = (When.apply _).curried
