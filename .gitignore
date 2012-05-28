@@ -6,3 +6,4 @@ project/project
 .classpath
 .project
 bin
+/.ensime
