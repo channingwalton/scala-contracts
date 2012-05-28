@@ -1,4 +1,6 @@
-package org.casualmiracles.finance.contracts
+package org.casualmiracles.finance.contracts.examples
+
+import org.casualmiracles.finance.contracts._
 import Contracts._
 import ExampleModel._
 import Cashflows._

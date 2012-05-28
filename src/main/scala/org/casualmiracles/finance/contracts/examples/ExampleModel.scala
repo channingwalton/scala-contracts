@@ -1,7 +1,8 @@
-package org.casualmiracles.finance.contracts
+package org.casualmiracles.finance.contracts.examples
 
+import org.casualmiracles.finance.contracts._
 import Contracts._
-import Stream.Empty
+import Stream._
 
 object ExampleModel {
   // Compositional valuation semantics for contracts
