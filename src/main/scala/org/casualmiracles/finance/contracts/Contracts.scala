@@ -24,6 +24,8 @@ object Contracts extends PRs with Zip {
     nextSlice(Stream(x))
   }
 
+  // Why does this work this way?
+  // Isn't PR supposed to consist of a set of random values, not lists of values containing possible duplicates?
   def timeSlices(sl: RV[Date]): Stream[RV[Date]] = {
     val (Date(s, t) #:: _) = sl
     val nextSlice = Stream.fill(t + 2)(Date(s, t + 1))

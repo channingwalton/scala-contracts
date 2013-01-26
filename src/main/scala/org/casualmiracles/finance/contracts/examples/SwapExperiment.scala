@@ -11,8 +11,6 @@ object SwapExperiment extends App {
 
   def interestRate = constant(1.0) // obviously need a real source of interest rates
 
-  def swap(give: Contract, take: Contract) = take andGive give
-
   def fixedRate(notional: Double, currency: Currency, rate: Double) = scale(notional * rate)(One(currency))
 
   def floatingRate(notional: Double, currency: Currency, rate: Observable[Double]) = scale(rate %* notional)(One(currency))

@@ -25,7 +25,7 @@ object Cashflows extends Zip {
     }
     eval _
   }
-  
+
   def cat(k: Currency, bs: PR[Boolean], rs: PR[Double], steps: Int): PR[Double] = PR(catCalc(bs.unPr, rs.unPr, steps))
 
   private def catCalc(b: Stream[RV[Boolean]], p: Stream[RV[Double]], steps: Int): Stream[RV[Double]] = {

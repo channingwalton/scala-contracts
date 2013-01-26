@@ -8,16 +8,16 @@ import Instruments._
 
 object Examples extends App {
 
-  val xm = exampleModel(mkDate(0))
-  val evalX = evalC(xm, USD)
+  val xm: Model = exampleModel(mkDate(0))
+  val evalX: Contract ⇒ PR[Double] = evalC(xm, USD)
   val t1Horizon = 3
   val t1 = mkDate(t1Horizon)
-  val c1 = zcb(t1, 10, USD)
+  val c1: Contract = zeroCouponBond(t1, 10, USD)
 
-  val c11 = european(mkDate(2),
-    zcb(mkDate(20), 0.4, USD) and
-      zcb(mkDate(30), 9.3, USD) and
-      zcb(mkDate(40), 109.3, USD) andGive (zcb(mkDate(12), 100.0, GBP)))
+  val c11 = european(mkDate(20),
+    zeroCouponBond(mkDate(20), 0.4, USD) and
+      zeroCouponBond(mkDate(30), 9.3, USD) and
+      zeroCouponBond(mkDate(40), 109.3, USD) andGive (zeroCouponBond(mkDate(12), 100.0, GBP)))
 
   println("C1")
   printPr(evalX(c1), 10)
@@ -39,5 +39,5 @@ object Examples extends App {
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
 
   println("c1 cashflow")
-  printPr(cashflow(xm, USD, 10)(c1), 4)
+  printPr(cashflow(xm, USD, 10)(c11), 100)
 }

@@ -26,7 +26,7 @@ trait PRs extends Zip {
   def printPr(pr: PR[_], n: Int) = pr.unPr.take(n).zipWithIndex.foreach { is ⇒ { print(is._2 + ": "); printRV(is._1) } }
 
   def printRV(rv: RV[_]) {
-    rv.foreach(s ⇒ print(s + " "))
+    print(rv.mkString(" "))
     println("")
   }
 }
