@@ -20,12 +20,12 @@ object ExampleModel {
       case Until(o, c)     ⇒ absorb(k, evalO(o), eval(c))
       case _               ⇒ sys.error("todo")
     }
-    eval _
+    eval
   }
 
   def takePr[T](n: Int, pr: PR[T]) = PR(pr.unPr.take(n))
   def horizonPr(pr: PR[_]) = pr.unPr.length
-  def andPr(pr: PR[Boolean]) = pr.unPr.forall(_)
+  def andPr(pr: PR[Boolean]) = pr.unPr.forall _
 
   case class Model(
     modelStart: Date,
