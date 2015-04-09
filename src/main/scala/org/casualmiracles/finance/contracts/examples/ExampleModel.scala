@@ -57,7 +57,7 @@ object ExampleModel {
     USD -> rates(5, 1),
     ZAR -> rates(15, 1.5))
 
-  def rateModel(k: Currency) = rateModels.get(k).getOrElse(sys.error("rateModel: currency not found " + k))
+  def rateModel(k: Currency) = rateModels.getOrElse(k, sys.error("rateModel: currency not found " + k))
 
   // Disc primitive
   def disc(k: Currency, bs: PR[Boolean], rs: PR[Double]): PR[Double] = PR(discCalc(bs.unPr, rs.unPr, rateModel(k).unPr))
@@ -90,7 +90,7 @@ object ExampleModel {
 
   def exch(k1: Currency, k2: Currency): PR[Double] = PR(konstSlices(1))
 
-  def expectedValue(outcomes: RV[Double], probabilities: RV[Double]): Double = (zipWith(outcomes, probabilities)(_ * _)).sum
+  def expectedValue(outcomes: RV[Double], probabilities: RV[Double]): Double = zipWith(outcomes, probabilities)(_ * _).sum
 
   def probabiltyLattice: Stream[RV[Double]] = probabilities(pathCounts)
 
@@ -102,7 +102,7 @@ object ExampleModel {
 
   def pathCounts: Stream[RV[Int]] = {
     def zero = Stream(0)
-    def paths(sl: Stream[Int]): Stream[RV[Int]] = sl #:: (paths(zipWith(sl ++ zero, 0 #:: sl)(_ + _)))
+    def paths(sl: Stream[Int]): Stream[RV[Int]] = sl #:: paths(zipWith(sl ++ zero, 0 #:: sl)(_ + _))
     paths(Stream(1))
   }
 

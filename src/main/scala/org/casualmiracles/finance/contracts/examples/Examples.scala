@@ -17,7 +17,7 @@ object Examples extends App {
   val c11 = european(mkDate(20),
     zeroCouponBond(mkDate(20), 0.4, USD) and
       zeroCouponBond(mkDate(30), 9.3, USD) and
-      zeroCouponBond(mkDate(40), 109.3, USD) andGive (zeroCouponBond(mkDate(12), 100.0, GBP)))
+      zeroCouponBond(mkDate(40), 109.3, USD) andGive zeroCouponBond(mkDate(12), 100.0, GBP))
 
   println("C1")
   printPr(evalX(c1), 10)
