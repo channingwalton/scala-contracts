@@ -25,7 +25,7 @@ object ExampleModel {
 
   def takePr[T](n: Int, pr: PR[T]) = PR(pr.unPr.take(n))
   def horizonPr(pr: PR[_]) = pr.unPr.length
-  def andPr(pr: PR[Boolean]) = pr.unPr.forall _
+  def andPr(pr: PR[Boolean]):Boolean = pr.unPr.forall(rvb => rvb.forall(identity))
 
   case class Model(
     modelStart: Date,
@@ -92,7 +92,7 @@ object ExampleModel {
 
   def expectedValue(outcomes: RV[Double], probabilities: RV[Double]): Double = zipWith(outcomes, probabilities)(_ * _).sum
 
-  def probabiltyLattice: Stream[RV[Double]] = probabilities(pathCounts)
+  def probabilityLattice: Stream[RV[Double]] = probabilities(pathCounts)
 
   def probabilities(s: Stream[RV[Int]]): Stream[RV[Double]] = {
     val (sl #:: sls) = s
