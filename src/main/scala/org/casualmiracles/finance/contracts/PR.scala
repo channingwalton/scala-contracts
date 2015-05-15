@@ -26,7 +26,10 @@ trait PRs extends Zip {
   def printPr(pr: PR[_], n: Int) = pr.unPr.take(n).zipWithIndex.foreach { is ⇒ { print(is._2 + ": "); printRV(is._1) } }
 
   def printRV(rv: RV[_]) {
-    print(rv.mkString(" "))
+    import java.text.DecimalFormat 
+    val formatter = new DecimalFormat("#.000")
+    
+    print(rv.map( d => String.format("%6s", formatter.format(d)) ).mkString(" "))
     println("")
   }
 }
