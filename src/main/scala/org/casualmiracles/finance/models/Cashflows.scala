@@ -1,13 +1,11 @@
-package org.casualmiracles.finance.contracts.examples
+package org.casualmiracles.finance.models
 
 import org.casualmiracles.finance.contracts._
 import Contracts._
+import scala.Stream
+import scala.collection.immutable.Stream.consWrapper
 
-import Observable._
-import Contract._
-import ExampleModel._
-
-object Cashflows extends Zip {
+object Cashflows extends GenericModel with ArithmeticInterestRateModel{
 
   def cashflow(model: Model, k: Currency, steps: Int): Contract ⇒ PR[Double] = {
     def eval(contract: Contract): PR[Double] = contract match {

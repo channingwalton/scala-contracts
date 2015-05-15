@@ -1,10 +1,17 @@
-package org.casualmiracles.finance.contracts.examples
+package org.casualmiracles.finance.models
 
 import org.casualmiracles.finance.contracts._
 import Contracts._
 import Stream._
 
-object ExampleModel {
+case class Model(
+    modelStart: Date,
+    disc: Currency ⇒ PR[Boolean] ⇒ PR[Double] ⇒ PR[Double],
+    exch: Currency ⇒ Currency ⇒ PR[Double],
+    absorb: Currency ⇒ PR[Boolean] ⇒ PR[Double] ⇒ PR[Double],
+    rateModel: Currency ⇒ PR[Double])
+ 
+abstract class GenericModel extends InterestRateModel {
   // Compositional valuation semantics for contracts
   def evalC(model: Model, k: Currency): Contract ⇒ PR[Double] = {
     def eval(contract: Contract): PR[Double] = contract match {
@@ -27,37 +34,13 @@ object ExampleModel {
   def horizonPr(pr: PR[_]) = pr.unPr.length
   def andPr(pr: PR[Boolean]):Boolean = pr.unPr.forall(rvb => rvb.forall(identity))
 
-  case class Model(
-    modelStart: Date,
-    disc: Currency ⇒ PR[Boolean] ⇒ PR[Double] ⇒ PR[Double],
-    exch: Currency ⇒ Currency ⇒ PR[Double],
-    absorb: Currency ⇒ PR[Boolean] ⇒ PR[Double] ⇒ PR[Double],
-    rateModel: Currency ⇒ PR[Double])
 
-  def exampleModel(modelDate: Date) = Model(
+  def makeModel(modelDate: Date) = Model(
     modelStart = Date(modelDate, 0),
     disc = (disc _).curried,
     exch = (exch _).curried,
     absorb = (absorb _).curried,
     rateModel = rateModel _)
-
-  // Interest Rate Model
-  def rates(rateNow: Double, delta: Double): PR[Double] = {
-    def makeRateSlices(rateNow: Double, n: Int): Stream[RV[Double]] = rateSlice(rateNow, n) #:: makeRateSlices(rateNow - delta, n + 1)
-    def rateSlice(minRate: Double, n: Int) = comb(minRate).take(n)
-    def comb(x: Double): Stream[Double] = x #:: comb(x + 2 * delta)
-    PR(makeRateSlices(rateNow, 1))
-  }
-
-  val rateModels: Map[Currency, PR[Double]] = Map(
-    CHF -> rates(7, 0.8),
-    EUR -> rates(6.5, 0.25),
-    GBP -> rates(8, 0.5),
-    KYD -> rates(11, 1.2),
-    USD -> rates(5, 1),
-    ZAR -> rates(15, 1.5))
-
-  def rateModel(k: Currency) = rateModels.getOrElse(k, sys.error("rateModel: currency not found " + k))
 
   // Disc primitive
   def disc(k: Currency, bs: PR[Boolean], rs: PR[Double]): PR[Double] = PR(discCalc(bs.unPr, rs.unPr, rateModel(k).unPr))

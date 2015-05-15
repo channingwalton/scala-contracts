@@ -1,10 +1,12 @@
-package org.casualmiracles.finance.contracts.examples
+package org.casualmiracles.finance.examples
 
 import org.casualmiracles.finance.contracts._
-import org.casualmiracles.finance.contracts.examples._
-import Contracts._
+import org.casualmiracles.finance.models._
+import org.casualmiracles.finance.contracts.Contracts._
 import ExampleModel._
-import Instruments._
+import org.casualmiracles.finance.contracts.Instruments._
+import org.casualmiracles.finance.models._
+import scala.Stream
 
 // Appendix A Tests from Anton Van Straaten's doco webpage
 object AvSTests extends App{
@@ -16,7 +18,7 @@ object AvSTests extends App{
  
   val testProb = probabilityLattice(10).sum - 1 < tolerance
   
-  val xm = exampleModel(mkDate(0))
+  val xm = ExampleModel.makeModel(mkDate(0))
   val evalX=evalC(xm,USD)
 
   val c1:Contract = zeroCouponBond(mkDate(3),10,USD)
@@ -32,5 +34,6 @@ object AvSTests extends App{
    )
   )
  
-  assert( List( testK, testProb, testPr1).forall(identity), "Test suite falure")
+  val testSuite = List( testK, testProb, testPr1)
+  assert( testSuite.forall(identity), "Test suite falure: " + testSuite )
 }
