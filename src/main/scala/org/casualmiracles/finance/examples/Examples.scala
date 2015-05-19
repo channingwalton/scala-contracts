@@ -1,15 +1,17 @@
-package org.casualmiracles.finance.contracts.examples
+package org.casualmiracles.finance.examples
 
 import org.casualmiracles.finance.contracts._
 import Contracts._
+import Instruments._
+import org.casualmiracles.finance.models._
 import ExampleModel._
 import Cashflows._
-import Instruments._
+import org.casualmiracles.finance.models.Cashflows
 
 object Examples extends App {
 
-  val xm: Model = exampleModel(mkDate(0))
-  val evalX: Contract ⇒ PR[Double] = evalC(xm, USD)
+  val xm: Model = ExampleModel.makeModel(mkDate(0))
+  val evalX: Contract ⇒ PR[Double] = ExampleModel.evalC(xm, USD)
   val t1Horizon = 3
   val t1 = mkDate(t1Horizon)
   val c1: Contract = zeroCouponBond(t1, 10, USD)

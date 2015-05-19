@@ -1,11 +1,12 @@
-package org.casualmiracles.finance.contracts.examples
+package org.casualmiracles.finance.examples
 
 import org.casualmiracles.finance.contracts._
 import Contracts._
-
+import org.casualmiracles.finance.models._
 import ExampleModel._
 import Cashflows._
 import Instruments._
+import org.casualmiracles.finance.models.Cashflows
 
 object SwapExperiment extends App {
 
@@ -26,8 +27,8 @@ object SwapExperiment extends App {
  val example = swap(fixedLeg, floatingLeg)
  
  val horizon = 15
- val xm = exampleModel(time0)
- val evalX = evalC(xm, USD)
+ val xm = ExampleModel.makeModel(time0)
+ val evalX = ExampleModel.evalC(xm, USD)
  
  printPr(cashflow(xm, USD, horizon)(example), horizon)
 }
