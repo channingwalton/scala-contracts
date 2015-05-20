@@ -6,7 +6,6 @@ import Instruments._
 import org.casualmiracles.finance.models._
 import ExampleModel._
 import Cashflows._
-import org.casualmiracles.finance.models.Cashflows
 
 object Examples extends App {
 

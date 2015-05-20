@@ -2,7 +2,7 @@ package org.casualmiracles.finance.contracts
 
 trait PRs extends Zip {
 
-  def max[T <% Double](pra: PR[T], prb: PR[T]): PR[Double] = lift2Pr((a: T, b: T) ⇒ math.max(a, b), pra, prb)
+  def max[T](pra: PR[T], prb: PR[T])(implicit ev: T ⇒ Double): PR[Double] = lift2Pr((a: T, b: T) ⇒ math.max(a, b), pra, prb)
 
   def condPr[T](aPr: PR[Boolean], bPr: PR[T], cPr: PR[T]): PR[T] = lift3Pr((b: Boolean, tru: T, fal: T) ⇒ if (b) tru else fal, aPr, bPr, cPr)
 
@@ -34,7 +34,7 @@ trait PRs extends Zip {
 
 object PR extends PRs {
 
-  implicit def PrOps(prA: PR[Double]) = new {
+  implicit class PrOps(prA: PR[Double]) {
     def %+(prB: PR[Double]): PR[Double] = lift2PrAll((_: Double) + (_: Double), prA, prB)
     def %-(prB: PR[Double]): PR[Double] = lift2PrAll((_: Double) - (_: Double), prA, prB)
     def %*(prB: PR[Double]): PR[Double] = lift2PrAll((_: Double) * (_: Double), prA, prB)
