@@ -68,6 +68,7 @@ class LatticeImage extends Zip{
     nls.flatMap {case (n:Int, sl: RV[(Int, Double)])=>showSlice(n, sl)} toList
   }
   
+  // TODO: wrap s into format spec, as per original showFFloat (Just 2) but keep in mind precision setting
   def nodeLabel( s: Double ): String = " [label=\"" + s + "\"]"
   
   def treeToDot[A]( s: Stream[RV[(Int,A)]] ): List[String] = s match{
