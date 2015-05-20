@@ -34,7 +34,7 @@ object Contracts extends PRs with Zip {
 
   def at(d: Date): Observable[Boolean] = date %== d
 
-  def mkDate(t: TimeStep): Date = Date((), t)
+  def mkDate(t: TimeStep): Date = Date(0, t)
 
   def time0: Date = mkDate(0)
 
