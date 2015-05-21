@@ -11,4 +11,12 @@ cache:
     - $HOME/.ivy2/cache
     - $HOME/.sbt
 
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/d531d9fe47a068895cac
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: false     # default: false
+
 script: sbt ++${TRAVIS_SCALA_VERSION} test
