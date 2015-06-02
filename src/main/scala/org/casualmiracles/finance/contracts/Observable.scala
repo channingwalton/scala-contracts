@@ -7,7 +7,7 @@ object Observable extends Zip {
     Observable((t: Date) ⇒ PR(zipWith(obsA.f(t).unPr, obsB.f(t).unPr)(rvF)))
   }
 
-  implicit def ObservableOps[T <% Double](obs: Observable[T]) = new {
+  implicit class ObservableOps[T <% Double](obs: Observable[T]) {
     def %*(a: Observable[T]) = lift2((_: T) * (_: T), obs, a)
     def %/(a: Observable[T]) = lift2((_: T) / (_: T), obs, a)
     def %+(a: Observable[T]) = lift2((_: T) + (_: T), obs, a)
@@ -15,7 +15,7 @@ object Observable extends Zip {
     def %%(a: Observable[T]) = lift2((_: T) % (_: T), obs, a)
   }
 
-  implicit def ObservableRelations[T <% Ordered[T]](obs: Observable[T]) = new {
+  implicit class ObservableRelations[T <% Ordered[T]](obs: Observable[T]) {
     def %<(a: Observable[T]) = lift2((_: T) < (_: T), obs, a)
     def %<=(a: Observable[T]) = lift2((_: T) <= (_: T), obs, a)
     def %>(a: Observable[T]) = lift2((_: T) > (_: T), obs, a)
@@ -23,12 +23,12 @@ object Observable extends Zip {
     def %==(a: Observable[T]) = lift2((_: T) == (_: T), obs, a)
   }
 
-  implicit def ObservableBooleans(obs: Observable[Boolean]) = new {
+  implicit class ObservableBooleans(obs: Observable[Boolean]) {
     def %&&(a: Observable[Boolean]) = lift2((_: Boolean) && (_: Boolean), obs, a)
     def %||(a: Observable[Boolean]) = lift2((_: Boolean) || (_: Boolean), obs, a)
   }
 
-  implicit def ObservableDateOps(obs: Observable[Date]) = new {
+  implicit class ObservableDateOps(obs: Observable[Date]) {
     def %-(a: Observable[Date]) = lift2((_: Date).t - (_: Date).t, obs, a)
     def %+(a: Observable[Date]) = lift2((_: Date).t + (_: Date).t, obs, a)
   }
