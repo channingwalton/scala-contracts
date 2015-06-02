@@ -36,7 +36,7 @@ abstract class GenericModel extends InterestRateModel {
 
 
   def makeModel(modelDate: Date) = Model(
-    modelStart = Date(modelDate, 0),
+    modelStart = modelDate,
     disc = (disc _).curried,
     exch = (exch _).curried,
     absorb = (absorb _).curried,
@@ -73,8 +73,10 @@ abstract class GenericModel extends InterestRateModel {
 
   def exch(k1: Currency, k2: Currency): PR[Double] = PR(konstSlices(1))
 
-  def expectedValue(outcomes: RV[Double], probabilities: RV[Double]): Double = zipWith(outcomes, probabilities)(_ * _).sum
+  private def expectedValue(outcomes: RV[Double], probabilities: RV[Double]): Double = zipWith(outcomes, probabilities)(_ * _).sum
 
+  def expectedValuePr( pr: PR[Double]): Stream[Double] = zipWith(pr.unPr, probabilityLattice)(expectedValue(_,_))
+      
   def probabilityLattice: Stream[RV[Double]] = probabilities(pathCounts)
 
   def probabilities(s: Stream[RV[Int]]): Stream[RV[Double]] = {
