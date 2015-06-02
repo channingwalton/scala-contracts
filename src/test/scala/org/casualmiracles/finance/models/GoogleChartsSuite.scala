@@ -20,7 +20,7 @@ class GoogleChartsSuite extends FunSuite with Matchers {
       val c1ExpectedValueUrl = GoogleCharts.chartUrl( expectedValuePr( pr1 ) ) 
       
       val c1ExpectedValueUrlTest = "http://chart.apis.google.com/chart?"+
-                 "chs=300x200&cht=lc&chxt=x,y"+
+                 "chs=500x300&cht=lc&chxt=x,y"+
                  "&chg=20,25,2,5" +
                  "&chxr=0,0,3|1,8.6,10.0"+
                  "&chd=t:0.0,31.8,65.1,100.0"
