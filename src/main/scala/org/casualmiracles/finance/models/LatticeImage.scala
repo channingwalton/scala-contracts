@@ -69,7 +69,7 @@ class LatticeImage extends Zip{
   }
   
   // TODO: wrap s into format spec, as per original showFFloat (Just 2) but keep in mind precision setting
-  def nodeLabel( s: Double ): String = " [label=\"" + s + "\"]"
+  def nodeLabel( s: Double ): String = " [label=\"" + "%1.3f".format(s) + "\"]"
   
   def treeToDot[A]( s: Stream[RV[(Int,A)]] ): List[String] = s match{
     case ( a #:: Empty ) => List()
