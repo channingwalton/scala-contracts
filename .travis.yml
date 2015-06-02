@@ -1,3 +1,19 @@
 language: scala
+
 scala:
-   - 2.11.2
+- 2.11.6
+
+jdk:
+- oraclejdk7
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/4fecfd30b773fd018b26
+
+script: sbt ++${TRAVIS_SCALA_VERSION} test

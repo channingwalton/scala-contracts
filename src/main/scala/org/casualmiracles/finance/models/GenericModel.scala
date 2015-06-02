@@ -36,7 +36,7 @@ abstract class GenericModel extends InterestRateModel {
 
 
   def makeModel(modelDate: Date) = Model(
-    modelStart = Date(modelDate, 0),
+    modelStart = modelDate,
     disc = (disc _).curried,
     exch = (exch _).curried,
     absorb = (absorb _).curried,
