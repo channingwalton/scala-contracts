@@ -34,6 +34,19 @@ object AvSTests extends App{
    )
   )
  
+  
+  // TODO: This whole testset is ripe to be converted to unit test
+  printPr( pr1, 5 )
+  
+  // Calculate expected value vector  
+  val expectedVal = expectedValuePr( pr1 )
+
+  // Print probabilityLattice
+  probabilityLattice.take(5).foreach(printRV)
+  print("---")
+  // Print expected value stream
+  expectedVal.take(5).foreach( println(_) ) 
+  
   val testSuite = List( testK, testProb, testPr1)
   assert( testSuite.forall(identity), "Test suite falure: " + testSuite )
 }

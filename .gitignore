@@ -1,3 +1,4 @@
+.DS_Store
 .lib
 .idea
 target
@@ -8,3 +9,4 @@ project/project
 .project
 bin
 /.ensime
+/.jvmopts

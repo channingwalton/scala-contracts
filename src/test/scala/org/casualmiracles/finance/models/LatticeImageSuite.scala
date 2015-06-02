@@ -7,6 +7,7 @@ import org.casualmiracles.finance.contracts._
 import PR._
 
 class LatticeImageSuite extends FunSuite with Matchers {
+  
   test("Pr1 Lattice Image dot file") {
          
     val pr1 = PR( Stream[RV[Double]]( 
@@ -36,10 +37,10 @@ class LatticeImageSuite extends FunSuite with Matchers {
                            |  6 [label="9.709"];
                            |  SL2 [label="2" style = solid peripheries=0] };
                            |  subgraph Slice3{ rank=same;
-                           |  7 [label="10.0"];
-                           |  8 [label="10.0"];
-                           |  9 [label="10.0"];
-                           |  10 [label="10.0"];
+                           |  7 [label="10.000"];
+                           |  8 [label="10.000"];
+                           |  9 [label="10.000"];
+                           |  10 [label="10.000"];
                            |  SL3 [label="3" style = solid peripheries=0] };
                            |  1 -- 2;
                            |  1 -- 3;
@@ -55,6 +56,7 @@ class LatticeImageSuite extends FunSuite with Matchers {
                            |  6 -- 10;
                            |}
                            |""".stripMargin
+  
     dotImageString should equal( dotTestString ) 
   }
 }
