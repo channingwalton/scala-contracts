@@ -1,5 +1,7 @@
 package org.casualmiracles.finance.contracts
 
+import Stream.Empty
+
 object Contracts extends PRs with Zip {
   
   def one = One.apply _
@@ -9,7 +11,7 @@ object Contracts extends PRs with Zip {
   def scale = (Scale.apply _).curried
   def cond = (Cond.apply _).curried
   
-  implicit def toConstant[T](x: T): Observable[T] = constant(x)
+  implicit def toConstant[T](x: T) = constant(x)
 
   def constant[T](k: T): Observable[T] = Observable((d: Date) ⇒ bigK(k))
 
@@ -34,7 +36,7 @@ object Contracts extends PRs with Zip {
 
   def at(d: Date): Observable[Boolean] = date %== d
 
-  def mkDate(t: TimeStep): Date = Date(0, t)
+  def mkDate(t: TimeStep): Date = Date((), t)
 
   def time0: Date = mkDate(0)
 

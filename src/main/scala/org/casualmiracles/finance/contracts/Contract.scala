@@ -1,7 +1,7 @@
 package org.casualmiracles.finance.contracts
 
 object Contract {
-  implicit class WithEnrichment(c: Contract) {
+  implicit def withEnrichment(c: Contract) = new {
     def and(c2: Contract) = And(c, c2)
     def andGive(c2: Contract) = And(c, Give(c2))
     def or(c2: Contract) = Or(c, c2)

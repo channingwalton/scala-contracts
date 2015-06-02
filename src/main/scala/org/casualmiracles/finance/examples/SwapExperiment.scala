@@ -6,6 +6,7 @@ import org.casualmiracles.finance.models._
 import ExampleModel._
 import Cashflows._
 import Instruments._
+import org.casualmiracles.finance.models.Cashflows
 
 object SwapExperiment extends App {
 
