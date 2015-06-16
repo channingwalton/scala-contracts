@@ -23,12 +23,13 @@ trait PRs extends Zip {
     PR(zipWith3(aPr.unPr, bPr.unPr, cPr.unPr)(rvF))
   }
 
-  def printPr(pr: PR[_], n: Int) = pr.unPr.take(n).zipWithIndex.foreach { is ⇒ { print(is._2 + ": "); printRV(is._1) } }
+  def formatPr(pr: PR[_], n: Int, margin:String = ""):String = pr.unPr.take(n).zipWithIndex.map( is ⇒ { margin + is._2 + ": " + formatRV(is._1) } ).mkString("")
 
-  def printRV(rv: RV[_]) {
-    
-    print(rv.map( d => "%7.3f".format(d) ).mkString(" "))
-    println("")
+  def formatRV(rv: RV[_]):String = {
+    rv.map( x => x match{
+      case d:Double => "%7.3f".format(d)
+      case d:Any => d
+    } ).mkString(" ") + "\n"
   }
 }
 

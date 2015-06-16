@@ -26,8 +26,8 @@ object SwapExperiment extends App {
  val example = swap(fixedLeg, floatingLeg)
  
  val horizon = 15
- val xm = ExampleModel.makeModel(time0)
+ val xm = ExampleModel.makeModel(time0, 0.5)
  val evalX = ExampleModel.evalC(xm, USD)
  
- printPr(cashflow(xm, USD, horizon)(example), horizon)
+ println( formatPr(cashflow(xm, USD, horizon)(example), horizon) )
 }

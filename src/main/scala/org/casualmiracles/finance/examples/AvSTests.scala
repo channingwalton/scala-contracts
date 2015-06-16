@@ -18,7 +18,7 @@ object AvSTests extends App{
  
   val testProb = probabilityLattice(10).sum - 1 < tolerance
   
-  val xm = ExampleModel.makeModel(mkDate(0))
+  val xm = ExampleModel.makeModel(mkDate(0), 0.5)
   val evalX=evalC(xm,USD)
 
   val c1:Contract = zeroCouponBond(mkDate(3),10,USD)
@@ -36,13 +36,16 @@ object AvSTests extends App{
  
   
   // TODO: This whole testset is ripe to be converted to unit test
-  printPr( pr1, 5 )
+  println( formatPr( pr1, 5 ) )
+  
+  // TODO: assert PR using inspector
+
   
   // Calculate expected value vector  
   val expectedVal = expectedValuePr( pr1 )
 
   // Print probabilityLattice
-  probabilityLattice.take(5).foreach(printRV)
+  print(probabilityLattice.take(5).map(formatRV).mkString("\n"))
   print("---")
   // Print expected value stream
   expectedVal.take(5).foreach( println(_) ) 

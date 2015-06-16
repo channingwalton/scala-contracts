@@ -12,16 +12,47 @@ import LatticeFE1Model._
 
 object LatticeModelsFE1Examples extends App {
 
-  val ltxm = LatticeFE1Model.makeModel(mkDate(0) )
-  printPr(ltxm.rateModel( USD),6) 
+  val ltxm = LatticeFE1Model.makeModel(mkDate(0), 0.5 )
+  
+  println("interest rates")
+  println( formatPr(ltxm.rateModel( USD),6) ) 
   
   val ltevalX=LatticeFE1Model.evalC(ltxm,USD)
   
   val ltc1:Contract = zeroCouponBond(mkDate(4),100,USD)
   val ltpr1 = ltevalX(ltc1)
   
-  printPr(ltpr1,5) 
-    
+  println("zcb:")
+  println( formatPr(ltpr1,5) ) 
+
+  // Buy contract
+  val b1 = buy(ltc1, 84, USD)
+  val b1pr = ltevalX(b1)
+  println("---------------------")
+
+  // European call 
+  println( "European Call:")
+  val ec = europeancall(mkDate(2),ltc1,84,USD)
+  val ecpr = ltevalX(ec)
+  println("--------------------")
+
+  
+  // American call 
+  println( "American Put:")
+  val ac = americanput(mkDate(3),ltc1,88,USD)
+  val acpr = ltevalX(ac)
+  println("--------------------")
+  
+  
+  //xx val ec:Contract = european(mkDate(2), ltc1)
+  //xx val ecpr = ltevalX(ec)
+  //xx println("European Call:")
+  //xx println( ec )
+  //xx println( formatPr(ecpr, 3) )
+  
+  // American Option (+snell)
+  
+  
   // TODO: add the rest of the paper securities
  
   //assert( List( testK, testProb, testPr1).forall(identity), "Test suite falure")
