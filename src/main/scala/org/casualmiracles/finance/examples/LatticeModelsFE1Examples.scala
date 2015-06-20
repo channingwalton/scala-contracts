@@ -8,14 +8,23 @@ import org.casualmiracles.finance.contracts._
 import Contracts._
 import Instruments._
 import org.casualmiracles.finance.models._
-import LatticeFE1Model._
 
 object LatticeModelsFE1Examples extends App {
 
-  val ltxm = LatticeFE1Model.makeModel(mkDate(0), 0.5 )
+  val mps = new ModelParameters().p(0.5)
   
-  println("interest rates")
-  println( formatPr(ltxm.rateModel( USD),6) ) 
+  val ltxm = LatticeFE1Model.makeModel(mkDate(0), mps )
+  
+  
+  println("Default Interest Rates")
+  println( formatPr(ltxm.rateModel( USD),6) )
+  
+
+  // TODO: How to initialize with different ratesModels[] map?
+  //LatticeFE1Model.rateModels(USD) = LatticeFE1Model.ratesUpDown(6, 1.25, 0.9)
+  
+  
+  
   
   val ltevalX=LatticeFE1Model.evalC(ltxm,USD)
   

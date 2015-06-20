@@ -10,9 +10,9 @@ import org.casualmiracles.finance.contracts.PR._
 class ContractsTracer extends Tracer{
   val tracehorizon: Int = 7
   
-  def trace(i:Int, c:Contract):Unit = if(trace) { print("\t"*i); println(c) }
+  def trace(i:Int, c:Contract):Unit = if(tracing) { output("\t"*i); outputln(c) }
   def trace[T](i:Int, s:String, pr: PR[T]): PR[T] = {
-    if(trace){ print("\t"*i); println(i,s); println( formatPr(pr, tracehorizon, "\t"*i ) ) }
+    if(tracing){ output("\t"*i); outputln(i,s); outputln( formatPr(pr, tracehorizon, "\t"*i ) ) }
     pr
   } 
 }

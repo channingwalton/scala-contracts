@@ -28,7 +28,7 @@ class TracerSuite extends FunSuite with Matchers{
 
     // no tracing 
     tracer.clear()
-    tracer.trace = false
+    tracer.tracing = false
     
     tracer.trace(0, "String")
     

@@ -28,7 +28,10 @@ class AvSSuite extends FunSuite with Matchers {
   }
   
   test("Zero Coupon Bond and Expected Value"){
-    val xm = ExampleModel.makeModel(mkDate(0), 0.5)
+ // xxxx
+    val mps = new ModelParameters(0,0,0,0)
+    
+    val xm = ExampleModel.makeModel(mkDate(0), mps)
     val evalX=evalC(xm,USD)
   
     val c1:Contract = zeroCouponBond(mkDate(3),10,USD)

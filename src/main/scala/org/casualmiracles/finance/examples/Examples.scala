@@ -9,7 +9,10 @@ import Cashflows._
 
 object Examples extends App {
 
-  val xm: Model = ExampleModel.makeModel(mkDate(0), 0.5)
+  val mps = new ModelParameters().p(0.5)
+//xxxx
+  //mps.p = 
+  val xm: Model = ExampleModel.makeModel(mkDate(0), mps)
   val evalX: Contract ⇒ PR[Double] = ExampleModel.evalC(xm, USD)
   val t1Horizon = 3
   val t1 = mkDate(t1Horizon)

@@ -18,16 +18,23 @@ import org.casualmiracles.finance.models._
  */
 object EmployeeStockOptions extends App with GeometricInterestRateModel{
 
-  val sigma = 0.25
-  val step = 1.0/5.0
-  val U = EmployeeStockOptionsModel.up(sigma, step)
-  val D = EmployeeStockOptionsModel.down(U)
-
   def europeanCallNoDividend(){
-    val p = EmployeeStockOptionsModel.p(0.05, 0, step, U, D)
+
+    val mps = new ModelParameters( 0.05, 0.25, 0, 1.0/5.0 )
+
+//    // TODO: uncomment after convertion to unit test
+//    mps.toString() should be (
+//      "sigma: 0.25; r: 0.05; div: 0.0; step: 0.2; up: 1.118292981373268; down: 0.8942200448866237; p: 0.5169304424430043"    
+//    )
     
-    val esoxm = EmployeeStockOptionsModel.makeModel(mkDate(0), p )
-    val esoevalX: Contract ⇒ PR[Double] = EmployeeStockOptionsModel.evalC(esoxm, USD)
+    val esoxm = EmployeeStockOptionsModel.makeModel(mkDate(0), mps)
+   
+    val esoevalM = new EmployeeStockOptionsModel()
+
+    esoevalM.tracer.tracing = true
+    
+    val esoevalX = esoevalM.evalC(esoxm, USD)
+    
       
     //val stock:PR[Double] = ratesUpDown(100.0, 1.1183, 0.8942)
     val cstock: Contract = stock(mkDate(0), 100, USD) 
@@ -35,6 +42,7 @@ object EmployeeStockOptions extends App with GeometricInterestRateModel{
     
     println( "Stock lattice:")
     println( formatPr(esoevalX(cstock), 10))
+    esoevalM.tracer.tracing = true
     
     // European call 
     println( "European Call:")
@@ -44,11 +52,14 @@ object EmployeeStockOptions extends App with GeometricInterestRateModel{
   }
   
   def americanCallDividend(){
-    val p = EmployeeStockOptionsModel.p(0.05, 0.04, step, U, D)
     
-    // TODO: refactor code duplication by accessing p via function
-    val esoxm = EmployeeStockOptionsModel.makeModel(mkDate(0), p )
-    val esoevalX: Contract ⇒ PR[Double] = EmployeeStockOptionsModel.evalC(esoxm, USD)
+    val mps = new ModelParameters( 0.05, 0.25, 0.04, 1.0/5.0 )
+    
+    val esoxm = EmployeeStockOptionsModel.makeModel(mkDate(0), mps )
+    
+    val esoevalM = new EmployeeStockOptionsModel()
+    
+    val esoevalX: Contract ⇒ PR[Double] = esoevalM.evalC(esoxm, USD)
     
     val cstock: Contract = stock(mkDate(0), 100, USD) 
     // American call 
