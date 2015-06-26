@@ -4,16 +4,17 @@ import org.casualmiracles.finance.contracts._
 import Contracts._
 import Instruments._
 import org.casualmiracles.finance.models._
-import ExampleModel._
+import EberModel._
 import Cashflows._
 
+// TODO: Convert to EberModelSuite.scala
 object Examples extends App {
 
   val mps = new ModelParameters().p(0.5)
-//xxxx
+
   //mps.p = 
-  val xm: Model = ExampleModel.makeModel(mkDate(0), mps)
-  val evalX: Contract ⇒ PR[Double] = ExampleModel.evalC(xm, USD)
+  val xm: Model = EberModel.makeModel(mkDate(0), mps)
+  val evalX: Contract ⇒ PR[Double] = EberModel.evalC(xm, USD)
   val t1Horizon = 3
   val t1 = mkDate(t1Horizon)
   val c1: Contract = zeroCouponBond(t1, 10, USD)

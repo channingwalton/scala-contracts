@@ -2,7 +2,6 @@ package org.casualmiracles.utilities
 
 import org.scalatest.FunSuite
 import org.scalatest.Matchers
-import com.casualmiracles.utilities.Tracer
 
 /**
  * @author yl
@@ -20,6 +19,7 @@ class TracerSuite extends FunSuite with Matchers{
 
   
     // tracing, accumulator mode
+    tracer.tracing = true
     tracer.mode = "acc"
     tracer.trace(0, "String")
     

@@ -1,4 +1,4 @@
-package com.casualmiracles.utilities
+package org.casualmiracles.utilities
 
 import org.casualmiracles.finance.contracts.Contract
 import org.casualmiracles.finance.contracts.PR

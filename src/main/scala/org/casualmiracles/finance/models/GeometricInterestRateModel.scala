@@ -14,7 +14,7 @@ trait GeometricInterestRateModel extends InterestRateModel {
     def comb(x:Double): Stream[Double] = x #:: comb(x/down*up)
     PR(makeRateSlices(rateNow, 1))
   }
-
+  import scala.collection.mutable.Map
   override val rateModels: Map[Currency, PR[Double]] = Map(
     USD -> ratesUpDown(5, 1, 1)
     //USD -> ratesUpDown(6, 1.25, 0.9)    

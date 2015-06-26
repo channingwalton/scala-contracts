@@ -9,8 +9,8 @@ object Instruments {
   
   def zeroCouponBond(d: Date, n: Double, c: Currency): Contract = when(at(d))(scale(n)(One(c)))
   
-  // TODO: stock is a modelled as a compounded-price security
-  def stock(d: Date, n: Double, c: Currency): Contract = upto(at(d))(scale(n)(One(c)))
+  // TODO: stock is modelled as a compounded-price security; Add Currency and Date support
+  def stock(n: Double): Contract = upto(n)
  
   def option(c:Contract): Contract = c or Zero
   def europeancall(d: Date, c: Contract, strike:Double, curr:Currency): Contract = when(at(d))(option(buy(c,strike,curr)))

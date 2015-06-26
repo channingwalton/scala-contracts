@@ -3,7 +3,7 @@ package org.casualmiracles.finance.models
 import org.scalatest._
 import Matchers._
 
-import ExampleModel._
+import EberModel._
 import org.casualmiracles.finance.contracts._
 import PR._
 

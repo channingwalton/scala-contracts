@@ -1,10 +1,10 @@
-package com.casualmiracles.utilities
+package org.casualmiracles.utilities
 
 /**
  * @author yl
  */
 class Tracer {
-  var tracing: Boolean = true
+  var tracing: Boolean = false
   var mode: String = "output"
   private val accumulator = new StringBuilder() 
     

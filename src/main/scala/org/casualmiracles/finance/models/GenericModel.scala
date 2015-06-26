@@ -5,7 +5,7 @@ import scala.Stream._
 import org.casualmiracles.finance.contracts._
 import org.casualmiracles.finance.contracts.Contracts._
 
-import com.casualmiracles.utilities.ContractsTracer
+import org.casualmiracles.utilities.ContractsTracer
 
 case class Model(
     modelStart: Date,
@@ -13,7 +13,7 @@ case class Model(
     disc: Currency ⇒ PR[Boolean] ⇒ PR[Double] ⇒ PR[Double],
     snell: Currency ⇒ PR[Boolean] ⇒ PR[Double] ⇒ PR[Double],
     exch: Currency ⇒ Currency ⇒ PR[Double],
-    comp: Currency ⇒ PR[Boolean] ⇒ PR[Double] ⇒ PR[Double],
+    comp: Double ⇒ PR[Double],
     absorb: Currency ⇒ PR[Boolean] ⇒ PR[Double] ⇒ PR[Double],
     rateModel: Currency ⇒ PR[Double],
     
@@ -59,9 +59,9 @@ abstract class GenericModel {
                                 tracer.trace(level, "In:"+f)
                                 tracer.trace(level, "Out:"+f, model.disc(k)(evalO(level+1,o))(eval(level+1, c)) )
                              }
-      case Upto(o, c)      ⇒ { val f = "Upto(o,c) => comp(k,evalO(o), eval(c))"
+      case Upto(n)      ⇒ { val f = "Upto(o,c) => comp(n)"
                                 tracer.trace(level, "In:"+f)
-                                tracer.trace(level, "Out:"+f, model.comp(k)(evalO(level+1,o))(eval(level+1, c)) )
+                                tracer.trace(level, "Out:"+f, model.comp(n) )
                              }
       case Anytime(o, c)  => { val f = "Anytime(o,c) => snell(k, evalO(o), eval(c))"
                                 tracer.trace(level, "In:"+f)
@@ -99,10 +99,9 @@ trait GenericComputations extends InterestRateModel {
   
  
   // compounding functions
-  // TODO: refactor hard-coded constant rate into another InterestRateClas r --> 0.5
+  // TODO: inconsistency: rates in lattices are percentages; rates in continuous function are decimals
   def discretecomp(r:Double):Double = 1.0+r/100.0
-  // TODO: add step as a first parameter when creating model and partially apply it
-  def continuouscomp(r:Double):Double = Math.exp((r/100.0)*(1.0/5.0))
+  def continuouscomp(step:Double, r:Double):Double = Math.exp((r/100.0)*step)
   
   // reducing logic
   def crr(b:Boolean, p:Double, q:Double):Double = if (b) p else q
@@ -114,7 +113,7 @@ trait GenericComputations extends InterestRateModel {
     disc = (discount( crr, discretecomp, inputsData.p _, _:Currency, _:PR[Boolean], _:PR[Double])).curried,
     snell = (discount( snell, discretecomp, inputsData.p _, _:Currency, _:PR[Boolean], _:PR[Double])).curried,
     exch = (exch _).curried,
-    comp = (comp _).curried,
+    comp = compound(inputsData.up _, inputsData.down _, _),
     absorb = (absorb _).curried,
     rateModel = rateModel _,
     inputs = inputsData)
@@ -131,14 +130,8 @@ trait GenericComputations extends InterestRateModel {
       else {
         val rest = discCalc(bs, ps, rs)
         val (nextSlice #:: _) = rest
-        
-        // TODO: hack different discounting rate
-        // val discSlice = zipWith(prevSlice(nextSlice), rateRv)((x, r) ⇒ x / (1 + r / 100))
-        // for discrete: (x, r)=> x/(1+r/100)
-        // for continous: (x, r)=> x*Math.exp(-0.05*(1/5))
         val discSlice = zipWith(prevSlice(nextSlice), rateRv)((x, r) ⇒ x/cf(r) )
-        //val thisSlice = zipWith3(bRv, pRv, discSlice)((b, p, q) ⇒ if (b) p else q)
-        val thisSlice = zipWith3(bRv, pRv, discSlice)((b, p, q) ⇒ f(b, p, q) )
+        val thisSlice = zipWith3(bRv, pRv, discSlice)((b, p, q) ⇒ f(b, p, q) ) 
         thisSlice #:: rest
       }
     }
@@ -146,34 +139,20 @@ trait GenericComputations extends InterestRateModel {
     def prevSlice(s: RV[Double]): RV[Double] = s match {
       case Empty                ⇒ Empty
       case (_ #:: Empty)        ⇒ Empty
-      // case (n1 #:: n2 #:: rest) ⇒ ((n1 + n2) / 2.0) #:: prevSlice(n2 #:: rest)
-      // TODO: Hack hard-code 0.5169, 1-0.5169 instead of hard-coded 0.5, 0.5
-      // TODO: those should be moved into Model parameters
-      // sic!! the parameters n1 and n2 were swapped around!!
-      
-      // TODO: HACK: with divident
-      // no divident:    case (n1 #:: n2 #:: rest) ⇒ (n1*(1-0.5169) + n2*0.5169) #:: prevSlice(n2 #:: rest)
       case (n1 #:: n2 #:: rest) ⇒ (n2*p() + n1*(1-p())) #:: prevSlice(n2 #:: rest)
     } 
     PR(discCalc(bs.unPr, rs.unPr, rateModel(k).unPr))
   }
 
   // compound -- opposite to discount -- primitive
-  def comp(k: Currency, bs: PR[Boolean], rs: PR[Double]): PR[Double] = {
-      // TODO: hack to prove the point
-      //def compCalc()
-      //  def ratesUpDown(rateNow: Double, up: Double, down: Double): PR[Double] = {
+  def compound( up:()=>Double, down:()=>Double, now:Double):PR[Double] = { 
+    def makeRateSlices(rateNow: Double, n: Int): Stream[RV[Double]] = rateSlice(rateNow, n) #:: makeRateSlices( rateNow * down(), n + 1)
+    def rateSlice(minRate: Double, n: Int) = comb(minRate).take(n)
+    def comb(x:Double): Stream[Double] = x #:: comb(x/down()*up())
     
-      // hard coded: 100.0, 1.1183, 0.8942
-    val rateNow = 100.0
-    val up = 1.1183
-    val down = 0.8942
-       def makeRateSlices(rateNow: Double, n: Int): Stream[RV[Double]] = rateSlice(rateNow, n) #:: makeRateSlices( rateNow * down, n + 1)
-       def rateSlice(minRate: Double, n: Int) = comb(minRate).take(n)
-       def comb(x:Double): Stream[Double] = x #:: comb(x/down*up)
-       PR(makeRateSlices(rateNow, 1))
-    }
-
+    PR(makeRateSlices(now, 1))
+  }
+  
   def absorb(k: Currency, prb: PR[Boolean], prRvs: PR[Double]): PR[Double] = {
     val bSlices = prb.unPr
     val rvs = prRvs.unPr
@@ -199,5 +178,4 @@ trait GenericComputations extends InterestRateModel {
     def paths(sl: Stream[Int]): Stream[RV[Int]] = sl #:: paths(zipWith(sl ++ zero, 0 #:: sl)(_ + _))
     paths(Stream(1))
   }
-
 }
