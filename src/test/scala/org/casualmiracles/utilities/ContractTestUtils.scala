@@ -1,7 +1,7 @@
 package org.casualmiracles.utilities
 
 import org.casualmiracles.finance.contracts.PR
-import PR._
+import org.casualmiracles.finance.contracts.PR._
 import org.casualmiracles.finance.models.GenericComputations
 
 /**
