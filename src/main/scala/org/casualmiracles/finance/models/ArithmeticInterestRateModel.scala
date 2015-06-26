@@ -13,7 +13,7 @@ trait ArithmeticInterestRateModel extends InterestRateModel {
     def comb(x: Double): Stream[Double] = x #:: comb(x + 2 * delta)
     PR(makeRateSlices(rateNow, 1))
   }
-
+  import scala.collection.mutable.Map
   override val rateModels: Map[Currency, PR[Double]] = Map(
     CHF -> rates(7, 0.8),
     EUR -> rates(6.5, 0.25),

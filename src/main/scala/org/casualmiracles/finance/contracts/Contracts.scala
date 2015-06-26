@@ -4,6 +4,7 @@ object Contracts extends PRs with Zip {
   
   def one = One.apply _
   def when = (When.apply _).curried
+  def upto = Upto.apply _
   def anytime = (Anytime.apply _).curried
   def until = (Until.apply _).curried
   def scale = (Scale.apply _).curried

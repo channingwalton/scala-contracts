@@ -4,13 +4,17 @@ import org.casualmiracles.finance.contracts._
 import Contracts._
 import Instruments._
 import org.casualmiracles.finance.models._
-import ExampleModel._
+import EberModel._
 import Cashflows._
 
+// TODO: Convert to EberModelSuite.scala
 object Examples extends App {
 
-  val xm: Model = ExampleModel.makeModel(mkDate(0))
-  val evalX: Contract ⇒ PR[Double] = ExampleModel.evalC(xm, USD)
+  val mps = new ModelParameters().p(0.5)
+
+  //mps.p = 
+  val xm: Model = EberModel.makeModel(mkDate(0), mps)
+  val evalX: Contract ⇒ PR[Double] = EberModel.evalC(xm, USD)
   val t1Horizon = 3
   val t1 = mkDate(t1Horizon)
   val c1: Contract = zeroCouponBond(t1, 10, USD)
@@ -21,7 +25,8 @@ object Examples extends App {
       zeroCouponBond(mkDate(40), 109.3, USD) andGive zeroCouponBond(mkDate(12), 100.0, GBP))
 
   println("C1")
-  printPr(evalX(c1), 10)
+  
+  println( formatPr(evalX(c1), 10) )
 
   def absorbEx(t: Date, x: Double, k: Currency) = until(constant(t) %> date)(scale(x)(one(k)))
 
@@ -40,5 +45,5 @@ object Examples extends App {
   val c12 = until(interestRate %> 6)(american(t1, t2, c10))
 
   println("c1 cashflow")
-  printPr(cashflow(xm, USD, 10)(c11), 100)
+  println( formatPr(cashflow(xm, USD, 10)(c11), 100) )
 }
