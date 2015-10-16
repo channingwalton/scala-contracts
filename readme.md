@@ -10,3 +10,5 @@ This is an implementation of Simon Peyton-Jones's [Composing contracts: an adven
 At present, the code is a brutal transformation of Anton's work into Scala and in need of much refinement.
 
 All thoughts, suggestions and contributions are most gratefully accepted. Particularly new models, and tests!
+
+For additional information see [Scala Contracts wiki](wiki)
